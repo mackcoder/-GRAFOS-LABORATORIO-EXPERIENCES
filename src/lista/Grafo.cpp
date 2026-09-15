@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -34,7 +35,7 @@ public:
     bool equals(const TGrafo& outro);
 
     // Exercício 22:
-    int** paraMatrizAdjacencia();
+    static TGrafo* matrizParaLista(int** matriz, int n);
 
     // Exercício 23:
     void inverterListas();
@@ -170,6 +171,105 @@ bool TGrafo::equals(const TGrafo& outro) {
     return true;
 }
 
+// Exercício 22: Converção de uma Matriz de Adjacência em uma Lista de Adjacência
+TGrafo* TGrafo::matrizParaLista(int** matriz, int n) {
+    TGrafo* novoGrafo = new TGrafo(n);
+
+    // Percorre a matriz de adjacência n x n
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            // Se houver aresta (valor 1 ou diferente de 0), insere na lista
+            if (matriz[i][j] != 0) {
+                novoGrafo->insereA(i, j);
+            }
+        }
+    }
+
+    return novoGrafo;
+}
+
+// Exercício 23: Inverter lista de adjacência
+void TGrafo::inverterListas() {
+    for (int i = 0; i < n; ++i) {
+        TNo *ant = nullptr;
+        TNo *atual = adj[i];
+        TNo *prox = nullptr;
+
+        while (atual != nullptr) {
+            prox = atual->prox; 
+            atual->prox = ant;  
+            ant = atual;        
+            atual = prox;       
+        }
+
+        adj[i] = ant;
+    }
+}
+
+// Auxiliar para mostrar a lista
+void TGrafo::show() {
+    for (int i = 0; i < n; i++) {
+        cout << "Adj[" << i << "]: ";
+        TNo *no = adj[i];
+        while (no != nullptr) {
+            cout << no->w << " -> ";
+            no = no->prox;
+        }
+        cout << "NULL" << endl;
+    }
+}
+
+// Exercício 24: Verifica se o vértice v é uma fonte
+int TGrafo::ehFonte(int v) {
+    if (inDegree(v) == 0 && outDegree(v) > 0) {
+        return 1;
+    }
+    return 0;
+}
+
+// Exercício 25: Verifica se o vértice v é um sorvedouro
+int TGrafo::ehSorvedouro(int v) {
+    if (inDegree(v) > 0 && outDegree(v) == 0) {
+        return 1;
+    }
+    return 0;
+}
+
+// Exercício 26: Verifica se o grafo é simétrico
+int TGrafo::ehSimetrico() {
+    // Percorre cada vértice u
+    for (int u = 0; u < n; ++u) {
+        TNo *no = adj[u];
+        
+        // Para cada vizinho v de u (aresta u -> v)
+        while (no != nullptr) {
+            int v = no->w;
+            
+            // Verifica se existe a aresta de volta (v -> u)
+            bool existeVolta = false;
+            TNo *noVolta = adj[v];
+            
+            while (noVolta != nullptr) {
+                if (noVolta->w == u) {
+                    existeVolta = true;
+                    break;
+                }
+                noVolta = noVolta->prox;
+            }
+
+            // Se não encontrou a aresta v -> u, o grafo não é simétrico
+            if (!existeVolta) {
+                return 0;
+            }
+
+            no = no->prox;
+        }
+    }
+
+    return 1;
+}
+
+
 // ----------------------------------------------------
 // EXECUÇÃO DO MAIN
 // ----------------------------------------------------
@@ -214,6 +314,63 @@ int main() {
     cout << "\n--- Exercicio 21 ---" << endl;
     cout << "g1 é igual a g2? " << (g1.equals(g2) ? "Sim" : "Nao") << endl;
     cout << "g1 é igual a g3? " << (g1.equals(g3) ? "Sim" : "Nao") << endl;
+
+    // Teste Exercício 22
+    int n = 3;
+
+    // Aloca uma matriz de adjacência 3x3 de exemplo
+    int** matriz = new int*[n];
+    for (int i = 0; i < n; ++i) {
+        matriz[i] = new int[n]{0};
+    }
+
+    // Arestas
+    matriz[0][1] = 1;
+    matriz[1][2] = 1;
+
+    // Converte a matriz para a estrutura TGrafo (lista de adjacência)
+    TGrafo* grafoLista = TGrafo::matrizParaLista(matriz, n);
+
+    // Verifica a conversão com os métodos já criados
+    cout << "Grau de saida do vertice 0: " << grafoLista->outDegree(0) << endl; // Retorna 1
+    cout << "Grau de entrada do vertice 2: " << grafoLista->inDegree(2) << endl; // Retorna 1
+
+    // Liberação de memória da matriz de teste
+    for (int i = 0; i < n; ++i) delete[] matriz[i];
+    delete[] matriz;
+    delete grafoLista;
+
+    // Teste Exercício 23
+
+    cout << "\n--- Exercicio 23 ---" << endl;
+    cout << "Lista de adjacencia ANTES da inversao:" << endl;
+    g1.show();
+
+    g1.inverterListas();
+
+    cout << "\nLista de adjacencia DEPOIS da inversao:" << endl;
+    g1.show();
+
+    // Teste Exercício 24
+    cout << "\n--- Exercicio 24 ---" << endl;
+    cout << "O vertice 0 é fonte em g1? " << g1.ehFonte(0) << endl;
+    cout << "O vertice 3 é fonte em g1? " << g1.ehFonte(3) << endl;
+
+    // Teste Exercício 25
+    cout << "\n--- Exercicio 25 ---" << endl;
+    cout << "O vertice 3 é sorvedouro em g1? " << g1.ehSorvedouro(3) << endl;
+    cout << "O vertice 0 é sorvedouro em g1? " << g1.ehSorvedouro(0) << endl; 
+
+    // Teste Exercício 26
+    cout << "\n--- Exercicio 26 ---" << endl;
+    cout << "O grafo g1 e simetrico? " << g1.ehSimetrico() << endl; 
+
+    // Criando um grafo simétrico para teste
+    TGrafo gSimetrico(2);
+    gSimetrico.insereA(0, 1); // 0 -> 1
+    gSimetrico.insereA(1, 0); // 1 -> 0
+    cout << "O grafo gSimetrico e simetrico? " << gSimetrico.ehSimetrico() << endl; 
+    
 
     return 0;
 }
