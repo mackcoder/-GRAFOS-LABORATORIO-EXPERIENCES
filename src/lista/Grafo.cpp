@@ -22,6 +22,7 @@ public:
     ~TGrafo();
     void insereA(int v, int w);
     void show();
+    int getN() { return n; }
     
     // Exercício 18:
     int inDegree(int v);
@@ -270,6 +271,111 @@ int TGrafo::ehSimetrico() {
     return 1;
 }
 
+// Exercício 27: Construcao da lista a partir de arquivo (grafo.txt)
+TGrafo* TGrafo::carregarDeArquivo(const std::string& nomeArquivo) {
+    std::ifstream arquivo(nomeArquivo);
+
+    if (!arquivo.is_open()) {
+        std::cerr << "Erro ao abrir o arquivo: " << nomeArquivo << std::endl;
+        return nullptr;
+    }
+
+    int v, a;
+    arquivo >> v; // Le a quantidade de vertices (linha 1)
+    arquivo >> a; // Le a quantidade de arestas (linha 2)
+
+    TGrafo* grafo = new TGrafo(v);
+
+    int origem, destino;
+    for (int i = 0; i < a; ++i) {
+        if (arquivo >> origem >> destino) {
+            grafo->insereA(origem, destino);
+        }
+    }
+
+    arquivo.close();
+    return grafo;
+}
+
+// Exercício 28: Remove um vértice de um grafo não-direcionado e suas arestas associadas
+void TGrafo::removerVerticeND(int v) {
+    if (v < 0 || v >= n) return;
+
+    // Percorre os vizinhos de v para remover as arestas inversas 
+    TNo *no = adj[v];
+    while (no != nullptr) {
+        int w = no->w;
+
+        // Remove v da lista encadeada do vértice w 
+        TNo *atual = adj[w];
+        TNo *ant = nullptr;
+
+        while (atual != nullptr) {
+            if (atual->w == v) {
+                if (ant == nullptr) {
+                    adj[w] = atual->prox;
+                } else {
+                    ant->prox = atual->prox;
+                }
+                delete atual;
+                m--; // Decrementa a contagem de arestas
+                break;
+            }
+            ant = atual;
+            atual = atual->prox;
+        }
+
+        no = no->prox;
+    }
+
+    // Libera toda a lista encadeada do próprio vértice v 
+    TNo *atualV = adj[v];
+    while (atualV != nullptr) {
+        TNo *temp = atualV;
+        atualV = atualV->prox;
+        delete temp;
+    }
+    adj[v] = nullptr;
+}
+
+// Exercício 29: Remove um vértice de um grafo direcionado e ajusta suas arestas
+void TGrafo::removerVerticeD(int v) {
+    if (v < 0 || v >= n) return;
+
+    // Libera a lista de adjacência do próprio vértice v 
+    TNo *atualV = adj[v];
+    while (atualV != nullptr) {
+        TNo *temp = atualV;
+        atualV = atualV->prox;
+        delete temp;
+        m--; // Decrementa o contador de arestas
+    }
+    adj[v] = nullptr;
+
+    // Remove todas as arestas de outros vértices que apontam para v 
+    for (int u = 0; u < n; ++u) {
+        if (u == v) continue;
+
+        TNo *atual = adj[u];
+        TNo *ant = nullptr;
+
+        while (atual != nullptr) {
+            if (atual->w == v) {
+                if (ant == nullptr) {
+                    adj[u] = atual->prox;
+                } else {
+                    ant->prox = atual->prox;
+                }
+                delete atual;
+                m--; // Decrementa o contador de arestas
+                break;
+            }
+            ant = atual;
+            atual = atual->prox;
+        }
+    }
+}
+
 // Exercício 30: Verifica se o grafo é completo
 bool TGrafo::ehCompleto() {
     if (n <= 1) return true;
@@ -315,43 +421,58 @@ int main() {
 
     // Teste Exercício 18
     cout << "--- Exercicio 18 ---" << endl;
-    cout << "Grau de entrada do vertice 3: " << g1.inDegree(3) << endl;
+    for (int v = 0; v < 4; v++) {
+        cout << "Vertice " << v << ": " << g1.inDegree(v) << endl;
+    }
 
     // Teste Exercício 19
     cout << "\n--- Exercicio 19 ---" << endl;
-    cout << "Grau de saida do vertice 0: " << g1.outDegree(0) << endl;
+    for (int v = 0; v < 4; v++) {
+        cout << "Vertice " << v << ": " << g1.outDegree(v) << endl;
+    }
 
     // Teste Exercício 20
     cout << "\n--- Exercicio 20 ---" << endl;
-    cout << "Grau total do vertice 0: " << g1.degree(0) << endl;
+    for (int v = 0; v < 4; v++) {
+        cout << "Vertice " << v << ": " << g1.degree(v) << endl;
+    }
 
     // Teste Exercício 21
     cout << "\n--- Exercicio 21 ---" << endl;
     cout << "g1 eh igual a g2? " << (g1.equals(g2) ? "Sim" : "Nao") << endl;
     cout << "g1 eh igual a g3? " << (g1.equals(g3) ? "Sim" : "Nao") << endl;
 
-    // Teste Exercício 22
-    int n = 3;
+    // Teste Exercício 22: 
+    cout << "\n--- Exercicio 22 ---" << endl;
+    int nMatriz = 3;
 
-    // Aloca uma matriz de adjacência 3x3 de exemplo
-    int** matriz = new int*[n];
-    for (int i = 0; i < n; ++i) {
-        matriz[i] = new int[n]{0};
+    // Alocação e montagem da matriz de teste 3x3
+    int** matriz = new int*[nMatriz];
+    for (int i = 0; i < nMatriz; ++i) {
+        matriz[i] = new int[nMatriz]{0};
+    }
+    matriz[0][1] = 1; // Aresta 0 -> 1
+    matriz[1][2] = 1; // Aresta 1 -> 2
+    matriz[2][0] = 1; // Aresta 2 -> 0
+
+    // Exibe a matriz original
+    cout << "Matriz de Adjacencia Original (" << nMatriz << "x" << nMatriz << "):" << endl;
+    for (int i = 0; i < nMatriz; ++i) {
+        for (int j = 0; j < nMatriz; ++j) {
+            cout << matriz[i][j] << " ";
+        }
+        cout << endl;
     }
 
-    // Arestas
-    matriz[0][1] = 1;
-    matriz[1][2] = 1;
+    // Converte a matriz para a estrutura TGrafo
+    TGrafo* grafoLista = TGrafo::matrizParaLista(matriz, nMatriz);
 
-    // Converte a matriz para a estrutura TGrafo (lista de adjacência)
-    TGrafo* grafoLista = TGrafo::matrizParaLista(matriz, n);
+    // Exibe a lista de adjacência resultante
+    cout << "\nLista de Adjacencia Gerada:" << endl;
+    grafoLista->show();
 
-    // Verifica a conversão com os métodos já criados
-    cout << "Grau de saida do vertice 0: " << grafoLista->outDegree(0) << endl; // Retorna 1
-    cout << "Grau de entrada do vertice 2: " << grafoLista->inDegree(2) << endl; // Retorna 1
-
-    // Liberação de memória da matriz de teste
-    for (int i = 0; i < n; ++i) delete[] matriz[i];
+    // Liberação de memória
+    for (int i = 0; i < nMatriz; ++i) delete[] matriz[i];
     delete[] matriz;
     delete grafoLista;
 
@@ -368,29 +489,74 @@ int main() {
 
     // Teste Exercício 24
     cout << "\n--- Exercicio 24 ---" << endl;
-    cout << "O vertice 0 eh fonte em g1? " << g1.ehFonte(0) << endl;
-    cout << "O vertice 3 eh fonte em g1? " << g1.ehFonte(3) << endl;
+    for (int v = 0; v < 4; v++) {
+        cout << "Vertice " << v << " eh fonte? " << (g1.ehFonte(v) ? "Sim" : "Nao") << endl;
+    }
 
     // Teste Exercício 25
     cout << "\n--- Exercicio 25 ---" << endl;
-    cout << "O vertice 3 eh sorvedouro em g1? " << g1.ehSorvedouro(3) << endl;
-    cout << "O vertice 0 eh sorvedouro em g1? " << g1.ehSorvedouro(0) << endl; 
+    for (int v = 0; v < 4; v++) {
+        cout << "Vertice " << v << " eh sorvedouro? " << (g1.ehSorvedouro(v) ? "Sim" : "Nao") << endl;
+    }
 
     // Teste Exercício 26
     cout << "\n--- Exercicio 26 ---" << endl;
-    cout << "O grafo g1 eh simetrico? " << g1.ehSimetrico() << endl; 
+    cout << "O grafo g1 eh simetrico? " << (g1.ehSimetrico() ? "SiM" : "Nao")<< endl; 
 
     // Criando um grafo simétrico para teste
     TGrafo gSimetrico(2);
     gSimetrico.insereA(0, 1); // 0 -> 1
     gSimetrico.insereA(1, 0); // 1 -> 0
-    cout << "O grafo gSimetrico eh simetrico? " << gSimetrico.ehSimetrico() << endl; 
+    cout << "O grafo gSimetrico eh simetrico? " << (gSimetrico.ehSimetrico() ? "SiM" : "Nao") << endl; 
     
     // Teste Exercício 27
+    cout << "\n--- Exercicio 27 ---" << endl;
+
+    TGrafo* gArquivo = TGrafo::carregarDeArquivo("grafo.txt");
+
+    if (gArquivo != nullptr) {
+        cout << "Grafo carregado com sucesso!" << endl;
+        gArquivo->show();
+
+        cout << "\nResultados para todos os vertices do grafo do arquivo:" << endl;
+        for (int v = 0; v < gArquivo->getN(); v++) { // Supondo 4 vértices conforme o arquivo
+            cout << "Vertice " << v 
+                 << " | Grau Entrada: " << gArquivo->inDegree(v)
+                 << " | Grau Saida: " << gArquivo->outDegree(v)
+                 << " | Grau Total: " << gArquivo->degree(v)
+                 << " | Eh Fonte? " << (gArquivo->ehFonte(v) ? "Sim" : "Nao")
+                 << " | Eh Sorvedouro? " << (gArquivo->ehSorvedouro(v) ? "Sim" : "Nao")
+                 << endl; 
+        }
+        delete gArquivo;
+    }
 
     // Teste Exercício 28
+    cout << "\n--- Exercicio 28 ---" << endl;
+    TGrafo gND(4);
+
+    gND.insereA(0, 1); gND.insereA(1, 0);
+    gND.insereA(1, 2); gND.insereA(2, 1);
+    gND.insereA(2, 3); gND.insereA(3, 2);
+
+    cout << "Grafo nao direcionado ANTES de remover o vertice 1:" << endl;
+    gND.show();
+
+    gND.removerVerticeND(1);
+
+    cout << "\nGrafo nao direcionado DEPOIS de remover o vertice 1:" << endl;
+    gND.show();
 
     // Teste Exercício 29
+
+    cout << "\n--- Exercicio 29 ---" << endl;
+    cout << "Grafo g1 ANTES de remover o vertice 2:" << endl;
+    g1.show();
+
+    g1.removerVerticeD(2);
+
+    cout << "\nGrafo g1 DEPOIS de remover o vertice 2:" << endl;
+    g1.show();
 
     // Teste Exercício 30
     cout << "\n--- Exercicio 30 ---" << endl;
@@ -406,4 +572,5 @@ int main() {
     
 
     return 0;
-}
+}   
+
