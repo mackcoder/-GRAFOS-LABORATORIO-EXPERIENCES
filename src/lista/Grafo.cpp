@@ -21,6 +21,7 @@ public:
     TGrafo(int n);
     ~TGrafo();
     void insereA(int v, int w);
+    void show();
     
     // Exercício 18:
     int inDegree(int v);
