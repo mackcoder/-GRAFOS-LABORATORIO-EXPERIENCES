@@ -313,8 +313,8 @@ int main() {
 
     // Teste Exercício 21
     cout << "\n--- Exercicio 21 ---" << endl;
-    cout << "g1 é igual a g2? " << (g1.equals(g2) ? "Sim" : "Nao") << endl;
-    cout << "g1 é igual a g3? " << (g1.equals(g3) ? "Sim" : "Nao") << endl;
+    cout << "g1 eh igual a g2? " << (g1.equals(g2) ? "Sim" : "Nao") << endl;
+    cout << "g1 eh igual a g3? " << (g1.equals(g3) ? "Sim" : "Nao") << endl;
 
     // Teste Exercício 22
     int n = 3;
@@ -354,23 +354,23 @@ int main() {
 
     // Teste Exercício 24
     cout << "\n--- Exercicio 24 ---" << endl;
-    cout << "O vertice 0 é fonte em g1? " << g1.ehFonte(0) << endl;
-    cout << "O vertice 3 é fonte em g1? " << g1.ehFonte(3) << endl;
+    cout << "O vertice 0 eh fonte em g1? " << g1.ehFonte(0) << endl;
+    cout << "O vertice 3 eh fonte em g1? " << g1.ehFonte(3) << endl;
 
     // Teste Exercício 25
     cout << "\n--- Exercicio 25 ---" << endl;
-    cout << "O vertice 3 é sorvedouro em g1? " << g1.ehSorvedouro(3) << endl;
-    cout << "O vertice 0 é sorvedouro em g1? " << g1.ehSorvedouro(0) << endl; 
+    cout << "O vertice 3 eh sorvedouro em g1? " << g1.ehSorvedouro(3) << endl;
+    cout << "O vertice 0 eh sorvedouro em g1? " << g1.ehSorvedouro(0) << endl; 
 
     // Teste Exercício 26
     cout << "\n--- Exercicio 26 ---" << endl;
-    cout << "O grafo g1 e simetrico? " << g1.ehSimetrico() << endl; 
+    cout << "O grafo g1 eh simetrico? " << g1.ehSimetrico() << endl; 
 
     // Criando um grafo simétrico para teste
     TGrafo gSimetrico(2);
     gSimetrico.insereA(0, 1); // 0 -> 1
     gSimetrico.insereA(1, 0); // 1 -> 0
-    cout << "O grafo gSimetrico e simetrico? " << gSimetrico.ehSimetrico() << endl; 
+    cout << "O grafo gSimetrico eh simetrico? " << gSimetrico.ehSimetrico() << endl; 
     
 
     return 0;
