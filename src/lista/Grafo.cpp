@@ -270,6 +270,20 @@ int TGrafo::ehSimetrico() {
     return 1;
 }
 
+// Exercício 30: Verifica se o grafo é completo
+bool TGrafo::ehCompleto() {
+    if (n <= 1) return true;
+
+    // Para cada vértice u, o grau de saída deve ser exatamente n - 1
+    for (int u = 0; u < n; ++u) {
+        if (outDegree(u) != n - 1) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 // ----------------------------------------------------
 // EXECUÇÃO DO MAIN
@@ -371,6 +385,24 @@ int main() {
     gSimetrico.insereA(0, 1); // 0 -> 1
     gSimetrico.insereA(1, 0); // 1 -> 0
     cout << "O grafo gSimetrico eh simetrico? " << gSimetrico.ehSimetrico() << endl; 
+    
+    // Teste Exercício 27
+
+    // Teste Exercício 28
+
+    // Teste Exercício 29
+
+    // Teste Exercício 30
+    cout << "\n--- Exercicio 30 ---" << endl;
+
+    // Grafo Completo 
+    TGrafo gCompleto(3);
+    gCompleto.insereA(0, 1); gCompleto.insereA(0, 2);
+    gCompleto.insereA(1, 0); gCompleto.insereA(1, 2);
+    gCompleto.insereA(2, 0); gCompleto.insereA(2, 1);
+
+    cout << "O grafo gCompleto eh completo? " << (gCompleto.ehCompleto() ? "Sim" : "Nao") << endl; 
+    cout << "O grafo g3 eh completo? " << (g3.ehCompleto() ? "Sim" : "Nao") << endl;              
     
 
     return 0;
