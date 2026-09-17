@@ -144,6 +144,14 @@ void TGrafo::removeV(int v) {
     if (v < 0 || v >= this->n) {
         throw std::runtime_error("Vertice fora dos limites\n");
     }
+
+    for (int i = 0; i < this->n; i++) {
+        if (adj[v][i] == 1)
+            this->m--;
+
+        if (adj[i][v] == 1)
+            this->m--;
+    }
     
     if (v < this->n-1) {
         for (int i = 0; i < n - 1; i++) {
@@ -210,8 +218,10 @@ void TGrafo::show(){
     std::cout << "\nRESPOSTA 10)";
 
     // Resposta 11)
-    std::cout << "\nRESPOSTA 11)";
+    std::cout << "\nRESPOSTA 11)\n";
     removeV(3);
+    std::cout << "n: " << n << std::endl;
+    std::cout << "m: " << m << std::endl;
     for( int i=0; i < n; i++){
         std::cout << "\n";
         for( int w=0; w < n; w++)
