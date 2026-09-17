@@ -33,6 +33,8 @@ class TGrafo{
 		bool Sorvedouro(int v);
 		int isSymetric();
 		void removeV(int v);
+		bool isComplete();
+		void _show(); // ⚠️ Remover depois (do .cpp tambem)
 		~TGrafo();		
 };	
 

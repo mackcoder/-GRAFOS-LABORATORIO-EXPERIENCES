@@ -164,6 +164,24 @@ void TGrafo::removeV(int v) {
     this->n--;
 }
 
+// ⚠️EXERCICIO 12 - RELATORIO
+bool TGrafo::isComplete() {
+    for (int i = 0; i < this->n; i++) {
+        for (int j = 0; j < this->n; j++) {
+            // Diagonal principal = 0
+            if (i == j) {
+                if (this->adj[i][j] != 0) return false; 
+            }
+            
+            // Outros valores na matriz == 1
+            else
+                if (this->adj[i][j] != 1) return false;
+        }
+    }
+
+    return true;
+}
+
 // Apresenta o Grafo contendo
 // n�mero de v�rtices, arestas
 // e a matriz de adjac�ncia obtida
@@ -230,10 +248,37 @@ void TGrafo::show(){
             else std::cout << "Adj[" << i<< "," << w << "]= 0" << " ";
     }
 
-
     // Resposta 12)
-    std::cout << "\nRESPOSTA 12)";
+    std::cout << "\n\nRESPOSTA 12)\n";
+    std::cout << "O grafo G1 " << (isComplete() ? "" : "nao ") << "eh completo!" << std::endl;
+
+
     // Resposta 13)
     
     std::cout << "\nfim da impressao do grafo." << std::endl;
+}
+
+// ⚠️ Remover depois
+void TGrafo::_show(){
+    std::cout << "   ";
+
+    for(int w = 0; w < this->n; w++){
+        if(w > 0)
+            std::cout << " ";
+        std::cout << w;
+    }
+
+    std::cout << std::endl;
+
+    for(int i = 0; i < this->n; i++){
+        std::cout << i << " [";
+
+        for(int w = 0; w < this->n; w++){
+            if(w > 0)
+                std::cout << " ";
+            std::cout << this->adj[i][w];
+        }
+
+        std::cout << "]" << std::endl;
+    }
 }
