@@ -282,7 +282,10 @@ void TGrafo::show(){
     std::cout << "\n\nRESPOSTA 13)\n";
     int** comp = complemento();
 
+    std::cout << "Matriz original:" << std::endl;
     _show();
+
+    std::cout << "\nMatriz complemento:" << std::endl;
     _printMatriz(comp);
 
     for (int i = 0; i < this->n; i++)
