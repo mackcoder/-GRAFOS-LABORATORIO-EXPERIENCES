@@ -35,6 +35,8 @@ class TGrafo{
 		void removeV(int v);
 		bool isComplete();
 		int** complemento();
+		int conexidade_nao_direcionado();
+		int conexidade_direcionado();
 		void _printMatriz(int** matriz);
 		void _show(); // ⚠️ Remover depois (do .cpp tambem)
 		~TGrafo();		

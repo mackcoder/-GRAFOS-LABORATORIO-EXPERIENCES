@@ -2,6 +2,7 @@
 #include "TGrafo.h"
 #include <fstream>
 #include <stdexcept>
+#include <vector>
 
 /*
 - Andre Doerner Duarte - 10427938
@@ -201,6 +202,107 @@ int** TGrafo::complemento() {
     return adjComp;
 }
 
+// ⚠️EXERCICIO 15 - RELATORIO
+int TGrafo::conexidade_nao_direcionado() {
+    if (this->n <= 1)
+        return 0;
+
+    bool* visitado = new bool[this->n]();
+    int* fila = new int[this->n];
+    int inicio = 0;
+    int fim = 0;
+
+    visitado[0] = true;
+    fila[fim++] = 0;
+
+    while (inicio < fim) {
+        int vertice = fila[inicio++];
+
+        for (int vizinho = 0; vizinho < this->n; vizinho++) {
+            if (this->adj[vertice][vizinho] == 1 && !visitado[vizinho]) {
+                visitado[vizinho] = true;
+                fila[fim++] = vizinho;
+            }
+        }
+    }
+
+    int resultado = 0;
+    for (int i = 0; i < this->n; i++) {
+        if (!visitado[i]) {
+            resultado = 1;
+            break;
+        }
+    }
+
+    delete[] visitado;
+    delete[] fila;
+
+    return resultado;
+}
+
+// ⚠️EXERCICIO 16 - RELATORIO
+int TGrafo::conexidade_direcionado() {
+    if (this->n <= 1)
+        return 3;
+
+    std::vector<std::vector<bool>> alcance(this->n, std::vector<bool>(this->n, false));
+
+    for (int i = 0; i < this->n; i++) {
+        alcance[i][i] = true;
+        for (int j = 0; j < this->n; j++)
+            if (this->adj[i][j] == 1)
+                alcance[i][j] = true;
+    }
+
+    // Warshall
+    for (int k = 0; k < this->n; k++)
+        for (int i = 0; i < this->n; i++)
+            for (int j = 0; j < this->n; j++)
+                alcance[i][j] = alcance[i][j] || (alcance[i][k] && alcance[k][j]);
+
+    bool c3 = true;
+    bool c2 = true;
+
+    for (int i = 0; i < this->n; i++) {
+        for (int j = 0; j < this->n; j++) {
+            if (!alcance[i][j])
+                c3 = false;
+            if (!alcance[i][j] && !alcance[j][i])
+                c2 = false;
+        }
+    }
+
+    if (c3)
+        return 3;
+    if (c2)
+        return 2;
+
+    // Ignora a direcao das arestas para diferenciar C1 de C0.
+    std::vector<bool> visitado(this->n, false);
+    std::vector<int> fila;
+    visitado[0] = true;
+    fila.push_back(0);
+
+    for (int posicao = 0; posicao < static_cast<int>(fila.size()); posicao++) {
+        int vertice = fila[posicao];
+
+        for (int vizinho = 0; vizinho < this->n; vizinho++) {
+            if ((this->adj[vertice][vizinho] == 1
+                    || this->adj[vizinho][vertice] == 1)
+                    && !visitado[vizinho]) {
+                visitado[vizinho] = true;
+                fila.push_back(vizinho);
+            }
+        }
+    }
+
+    for (int i = 0; i < this->n; i++)
+        if (!visitado[i])
+            return 0;
+
+    return 1;
+}
+
 void _show();
 void _printMatriz(int** matriz);
 // Apresenta o Grafo contendo
@@ -278,8 +380,8 @@ void TGrafo::show(){
     std::cout << "\n\nRESPOSTA 13)\n";
     std::cout << "O grafo G " << (isComplete() ? "" : "nao ") << "eh completo!" << std::endl;
 
-    // Resposta 13)
-    std::cout << "\n\nRESPOSTA 13)\n";
+    // Resposta 14)
+    std::cout << "\n\nRESPOSTA 14)\n";
     int** comp = complemento();
 
     std::cout << "Matriz original:" << std::endl;
@@ -291,6 +393,16 @@ void TGrafo::show(){
     for (int i = 0; i < this->n; i++)
         delete[] comp[i];
     delete[] comp;
+
+    // Resposta 15)
+    std::cout << "\nRESPOSTA 15)\n";
+    std::cout << "\nApenas se o grafo passado for NAO DIRECIONADO\n";
+    std::cout << "O grafo G " << (conexidade_nao_direcionado() == 0 ? "eh conexo!" : "eh desconexo!") << std::endl;
+    
+    // Resposta 16)
+    std::cout << "\nRESPOSTA 16)\n";
+    std::cout << "\nApenas se o grafo passado for DIRECIONADO\n";
+    std::cout << "Categoria de conexidade do grafo G: C" << conexidade_direcionado() << std::endl;
     
     std::cout << "\nfim da impressao do grafo." << std::endl;
 }
