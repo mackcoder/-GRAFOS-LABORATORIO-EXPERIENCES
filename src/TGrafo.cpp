@@ -183,6 +183,26 @@ bool TGrafo::isComplete() {
     return true;
 }
 
+// ⚠️EXERCICIO 14 - RELATORIO
+int** TGrafo::complemento() {
+    int** adjComp = new int*[this->n];
+
+    for (int i = 0; i < this->n; i++) {
+        adjComp[i] = new int[this->n];
+
+        for (int j = 0; j < this->n; j++) {
+            if (i == j)
+                adjComp[i][j] = 0;
+            else
+                adjComp[i][j] = this->adj[i][j] ? 0 : 1;
+        }
+    }
+
+    return adjComp;
+}
+
+void _show();
+void _printMatriz(int** matriz);
 // Apresenta o Grafo contendo
 // n�mero de v�rtices, arestas
 // e a matriz de adjac�ncia obtida
@@ -257,8 +277,43 @@ void TGrafo::show(){
     // Resposta 13)
     std::cout << "\n\nRESPOSTA 13)\n";
     std::cout << "O grafo G " << (isComplete() ? "" : "nao ") << "eh completo!" << std::endl;
+
+    // Resposta 13)
+    std::cout << "\n\nRESPOSTA 13)\n";
+    int** comp = complemento();
+
+    _show();
+    _printMatriz(comp);
+
+    for (int i = 0; i < this->n; i++)
+        delete[] comp[i];
+    delete[] comp;
     
     std::cout << "\nfim da impressao do grafo." << std::endl;
+}
+
+void TGrafo::_printMatriz(int** matriz) {
+    std::cout << "   ";
+
+    for (int j = 0; j < this->n; j++) {
+        if (j > 0)
+            std::cout << " ";
+        std::cout << j;
+    }
+
+    std::cout << std::endl;
+
+    for (int i = 0; i < this->n; i++) {
+        std::cout << i << " [";
+
+        for (int j = 0; j < this->n; j++) {
+            if (j > 0)
+                std::cout << " ";
+            std::cout << matriz[i][j];
+        }
+
+        std::cout << "]" << std::endl;
+    }
 }
 
 // ⚠️ Remover depois

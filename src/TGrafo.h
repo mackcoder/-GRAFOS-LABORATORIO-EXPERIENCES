@@ -34,9 +34,10 @@ class TGrafo{
 		int isSymetric();
 		void removeV(int v);
 		bool isComplete();
+		int** complemento();
+		void _printMatriz(int** matriz);
 		void _show(); // ⚠️ Remover depois (do .cpp tambem)
 		~TGrafo();		
 };	
 
 #endif
-
