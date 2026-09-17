@@ -165,6 +165,7 @@ void TGrafo::removeV(int v) {
 }
 
 // ⚠️EXERCICIO 12 - RELATORIO
+// ⚠️EXERCICIO 13 - RELATORIO
 bool TGrafo::isComplete() {
     for (int i = 0; i < this->n; i++) {
         for (int j = 0; j < this->n; j++) {
@@ -250,10 +251,12 @@ void TGrafo::show(){
 
     // Resposta 12)
     std::cout << "\n\nRESPOSTA 12)\n";
-    std::cout << "O grafo G1 " << (isComplete() ? "" : "nao ") << "eh completo!" << std::endl;
+    std::cout << "O grafo G " << (isComplete() ? "" : "nao ") << "eh completo!" << std::endl;
 
 
     // Resposta 13)
+    std::cout << "\n\nRESPOSTA 13)\n";
+    std::cout << "O grafo G " << (isComplete() ? "" : "nao ") << "eh completo!" << std::endl;
     
     std::cout << "\nfim da impressao do grafo." << std::endl;
 }
