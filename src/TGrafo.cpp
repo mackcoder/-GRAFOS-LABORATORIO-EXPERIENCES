@@ -1,6 +1,7 @@
 #include <iostream>
 #include "TGrafo.h"
 #include <fstream>
+#include <stdexcept>
 
 /*
 - Andre Doerner Duarte - 10427938
@@ -138,6 +139,22 @@ int TGrafo::isSymetric(){
 
 // ⚠️EXERCICIO 10 - RELATORIO
 
+// ⚠️EXERCICIO 11 - RELATORIO
+void TGrafo::removeV(int v) {
+    if (v < 0 || v >= this->n) {
+        throw std::runtime_error("Vertice fora dos limites\n");
+    }
+    
+    if (v < this->n-1) {
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - 1; j++) {
+                adj[i][j] = adj[i + (i >= v)][j + (j >= v)];
+            }
+        }
+    }
+
+    this->n--;
+}
 
 // Apresenta o Grafo contendo
 // n�mero de v�rtices, arestas
@@ -173,6 +190,7 @@ void TGrafo::show(){
     for(int v = 0; v < n; v++){
         std::cout << "Grau total do vertice " << v << ": " << degree(v) << std::endl;
     }
+
     //-----------------------------------------------------------------------------------//
     // Função Checa Fonte e Sorvedouro:
     // Resposta 4) && 5)
@@ -180,6 +198,7 @@ void TGrafo::show(){
     for(int v = 0; v < n; v++){
         std::cout << "Vertice " << v << " -> Fonte: " << Fonte_check(v) << "|| Sorvedouro: " << Sorvedouro(v) << std::endl;
     }
+
     // Função Checa Simétrico:
     // Resposta 6)
     std::cout << "\nRESPOSTA 6)\n";
@@ -189,13 +208,22 @@ void TGrafo::show(){
         std::cout << "Retorno de checagem de simetria -> Return: " << isSymetric() <<std::endl; 
     // Resposta 10)
     std::cout << "\nRESPOSTA 10)";
+
     // Resposta 11)
     std::cout << "\nRESPOSTA 11)";
+    removeV(3);
+    for( int i=0; i < n; i++){
+        std::cout << "\n";
+        for( int w=0; w < n; w++)
+            if(adj[i][w] == 1)
+                std::cout << "Adj[" << i<< "," << w << "]= 1" << " ";
+            else std::cout << "Adj[" << i<< "," << w << "]= 0" << " ";
+    }
+
+
     // Resposta 12)
     std::cout << "\nRESPOSTA 12)";
     // Resposta 13)
     
     std::cout << "\nfim da impressao do grafo." << std::endl;
 }
-
-
