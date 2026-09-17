@@ -8,8 +8,8 @@ all:
 	$(CXX) $(CXXFLAGS) $(CXXSRC) -o $(CXXTARGET)
 
 run: all
-	./programa
-	rm programa
+	./$(CXXTARGET)
+	rm $(CXXTARGET)
 
 clean:
-	rm programa
+	rm $(CXXTARGET)
