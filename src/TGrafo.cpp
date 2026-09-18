@@ -32,7 +32,7 @@ TGrafo::~TGrafo(){
 	n = 0;
 	m = 0;
 	delete [] *adj;
-	std::cout << "espa�o liberado";
+	std::cout << "espaco liberado";
 }
 
 // Insere uma aresta no Grafo tal que
@@ -165,7 +165,6 @@ void TGrafo::removeV(int v) {
     this->n--;
 }
 
-// ⚠️EXERCICIO 12 - RELATORIO
 // ⚠️EXERCICIO 13 - RELATORIO
 bool TGrafo::isComplete() {
     for (int i = 0; i < this->n; i++) {
@@ -200,44 +199,6 @@ int** TGrafo::complemento() {
     }
 
     return adjComp;
-}
-
-// ⚠️EXERCICIO 15 - RELATORIO
-int TGrafo::conexidade_nao_direcionado() {
-    if (this->n <= 1)
-        return 0;
-
-    bool* visitado = new bool[this->n]();
-    int* fila = new int[this->n];
-    int inicio = 0;
-    int fim = 0;
-
-    visitado[0] = true;
-    fila[fim++] = 0;
-
-    while (inicio < fim) {
-        int vertice = fila[inicio++];
-
-        for (int vizinho = 0; vizinho < this->n; vizinho++) {
-            if (this->adj[vertice][vizinho] == 1 && !visitado[vizinho]) {
-                visitado[vizinho] = true;
-                fila[fim++] = vizinho;
-            }
-        }
-    }
-
-    int resultado = 0;
-    for (int i = 0; i < this->n; i++) {
-        if (!visitado[i]) {
-            resultado = 1;
-            break;
-        }
-    }
-
-    delete[] visitado;
-    delete[] fila;
-
-    return resultado;
 }
 
 // ⚠️EXERCICIO 16 - RELATORIO
@@ -302,6 +263,17 @@ int TGrafo::conexidade_direcionado() {
 
     return 1;
 }
+
+// bool yes() {
+//     return true;
+// }
+
+// // ⚠️EXERCICIO 17 - RELATORIO
+// int** reduzida() {
+//     std::vector<std::vector<int>> G;
+
+//     for
+// }
 
 void _show();
 void _printMatriz(int** matriz);
@@ -393,15 +365,9 @@ void TGrafo::show(){
     for (int i = 0; i < this->n; i++)
         delete[] comp[i];
     delete[] comp;
-
-    // Resposta 15)
-    std::cout << "\nRESPOSTA 15)\n";
-    std::cout << "\nApenas se o grafo passado for NAO DIRECIONADO\n";
-    std::cout << "O grafo G " << (conexidade_nao_direcionado() == 0 ? "eh conexo!" : "eh desconexo!") << std::endl;
     
     // Resposta 16)
     std::cout << "\nRESPOSTA 16)\n";
-    std::cout << "\nApenas se o grafo passado for DIRECIONADO\n";
     std::cout << "Categoria de conexidade do grafo G: C" << conexidade_direcionado() << std::endl;
     
     std::cout << "\nfim da impressao do grafo." << std::endl;
@@ -431,8 +397,7 @@ void TGrafo::_printMatriz(int** matriz) {
     }
 }
 
-// ⚠️ Remover depois
-void TGrafo::_show(){
+void TGrafo::_show() {
     std::cout << "   ";
 
     for(int w = 0; w < this->n; w++){

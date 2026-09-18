@@ -38,7 +38,7 @@ class TGrafo{
 		int conexidade_nao_direcionado();
 		int conexidade_direcionado();
 		void _printMatriz(int** matriz);
-		void _show(); // ⚠️ Remover depois (do .cpp tambem)
+		void _show();
 		~TGrafo();		
 };	
 

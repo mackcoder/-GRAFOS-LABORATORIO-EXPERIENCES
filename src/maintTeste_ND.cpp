@@ -12,7 +12,7 @@ int main(){
 
     //---------------------------------------------//
 
-    g2.readfile("grafo_example.txt");
+    g2.readfile("src/grafo_example.txt");
 
     g2.NDshow(); 
 

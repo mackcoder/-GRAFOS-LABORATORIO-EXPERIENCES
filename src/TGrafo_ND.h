@@ -27,7 +27,13 @@ class TGrafo_ND{
 		void NDremoveA(int v, int w);
 		void readfile(const char* grafo_example);
 		int degree(int v);
+		void removeV(int v);
 		void NDshow();
+		bool isComplete();
+		int** complemento();
+		int conexidade_nao_direcionado();
+		void _printMatriz(int** matriz);
+		void _show();
 		~TGrafo_ND();		
 };	
 
