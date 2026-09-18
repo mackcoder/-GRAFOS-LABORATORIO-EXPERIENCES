@@ -21,6 +21,7 @@ class TGrafo{
 		int n; // quantidade de v�rtices
 		int m; // quantidade de arestas
 		int **adj; //matriz de adjac�ncia
+		bool _reduzido_caminho(int x, int y);
 	public:
 		TGrafo( int n);
 		void insereA(int v, int w);
@@ -37,7 +38,8 @@ class TGrafo{
 		int** complemento();
 		int conexidade_nao_direcionado();
 		int conexidade_direcionado();
-		void _printMatriz(int** matriz);
+		int** reduzido(int& quantidadeComponentes);
+		void _printMatriz(int** matriz, int tamanho);
 		void _show();
 		~TGrafo();		
 };	

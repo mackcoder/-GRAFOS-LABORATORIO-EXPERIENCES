@@ -264,19 +264,95 @@ int TGrafo::conexidade_direcionado() {
     return 1;
 }
 
-// bool yes() {
-//     return true;
-// }
+// ⚠️EXERCICIO 17 - RELATORIO
+bool TGrafo::_reduzido_caminho(int x, int y) {
+    if (x < 0 || x >= this->n || y < 0 || y >= this->n)
+        return false;
 
-// // ⚠️EXERCICIO 17 - RELATORIO
-// int** reduzida() {
-//     std::vector<std::vector<int>> G;
+    std::vector<bool> visitado(this->n, false);
+    std::vector<int> pilha = {x};
+    visitado[x] = true;
 
-//     for
-// }
+    while (!pilha.empty()) {
+        int atual = pilha.back();
+        pilha.pop_back();
 
-void _show();
-void _printMatriz(int** matriz);
+        if (atual == y)
+            return true;
+
+        for (int vizinho = 0; vizinho < this->n; vizinho++) {
+            if (this->adj[atual][vizinho] != 0 && !visitado[vizinho]) {
+                visitado[vizinho] = true;
+                pilha.push_back(vizinho);
+            }
+        }
+    }
+
+    return false;
+}
+
+bool _reduzido_usado(const std::vector<std::vector<int>>& g, int index) {
+    for (int i = 0; i < (int) g.size(); i++) {
+        for (int j = 0; j < (int) g[i].size(); j++) {
+            if (g[i][j] == index)
+                return true;
+        }
+    }
+
+    return false;
+}
+
+int** TGrafo::reduzido(int& quantidadeComponentes) {
+    std::vector<std::vector<int>> g;
+
+    for (int i = 0; i < this->n; i++) {
+        // Pula vertices ja usados
+        if (_reduzido_usado(g, i)) continue;
+
+        std::vector<int> gx = {i};
+
+        for (int j = 0; j < this->n; j++) {
+            if (i == j) continue;
+
+            // Adiciona a lista gx se forem N+ e N-
+            if (_reduzido_caminho(i, j) && _reduzido_caminho(j, i))
+                gx.push_back(j);
+        }
+
+        g.push_back(gx);
+    }
+
+    quantidadeComponentes = static_cast<int>(g.size());
+    int** red = new int*[quantidadeComponentes];
+
+    for (int i = 0; i < quantidadeComponentes; i++)
+        red[i] = new int[quantidadeComponentes]{};
+
+    // Cada posicao red[i][j] indica se existe uma aresta saindo de
+    // algum vertice da componente i para algum vertice da componente j
+    for (int i = 0; i < quantidadeComponentes; i++) {
+        for (int j = 0; j < quantidadeComponentes; j++) {
+            if (i == j) continue;
+
+            bool encontrouAresta = false;
+
+            for (int origem : g[i]) {
+                for (int destino : g[j]) {
+                    if (this->adj[origem][destino] == 1) {
+                        red[i][j] = 1;
+                        encontrouAresta = true;
+                        break;
+                    }
+                }
+
+                if (encontrouAresta) break;
+            }
+        }
+    }
+
+    return red;
+}
+
 // Apresenta o Grafo contendo
 // n�mero de v�rtices, arestas
 // e a matriz de adjac�ncia obtida
@@ -360,7 +436,7 @@ void TGrafo::show(){
     _show();
 
     std::cout << "\nMatriz complemento:" << std::endl;
-    _printMatriz(comp);
+    _printMatriz(comp, this->n);
 
     for (int i = 0; i < this->n; i++)
         delete[] comp[i];
@@ -369,14 +445,29 @@ void TGrafo::show(){
     // Resposta 16)
     std::cout << "\nRESPOSTA 16)\n";
     std::cout << "Categoria de conexidade do grafo G: C" << conexidade_direcionado() << std::endl;
+
+    // Resposta 17)
+    std::cout << "\n\nRESPOSTA 17)\n";
+    int quantidadeComponentes;
+    int** reduzida = reduzido(quantidadeComponentes);
+
+    std::cout << "Matriz original:" << std::endl;
+    _show();
+
+    std::cout << "\nMatriz reduzida:" << std::endl;
+    _printMatriz(reduzida, quantidadeComponentes);
+
+    for (int i = 0; i < quantidadeComponentes; i++)
+        delete[] reduzida[i];
+    delete[] reduzida;
     
     std::cout << "\nfim da impressao do grafo." << std::endl;
 }
 
-void TGrafo::_printMatriz(int** matriz) {
+void TGrafo::_printMatriz(int** matriz, int tamanho) {
     std::cout << "   ";
 
-    for (int j = 0; j < this->n; j++) {
+    for (int j = 0; j < tamanho; j++) {
         if (j > 0)
             std::cout << " ";
         std::cout << j;
@@ -384,10 +475,10 @@ void TGrafo::_printMatriz(int** matriz) {
 
     std::cout << std::endl;
 
-    for (int i = 0; i < this->n; i++) {
+    for (int i = 0; i < tamanho; i++) {
         std::cout << i << " [";
 
-        for (int j = 0; j < this->n; j++) {
+        for (int j = 0; j < tamanho; j++) {
             if (j > 0)
                 std::cout << " ";
             std::cout << matriz[i][j];
