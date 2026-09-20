@@ -643,8 +643,8 @@ void TGrafo::show(){
     std::cout << "--- GRAFO DEPOIS DA REMOCAO ---\n";
     _show();
 
-    // Resposta 12)
-    std::cout << "\n\nRESPOSTA 12)\n";
+    // Resposta 13)
+    std::cout << "\n\nRESPOSTA 13)\n";
     std::cout << "O grafo G " << (isComplete() ? "" : "nao ") << "eh completo!" << std::endl;
 
     // Resposta 14)
